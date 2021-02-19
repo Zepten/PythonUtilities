@@ -12,15 +12,18 @@ def ip_calculator(inp):
         print('Command syntax: ip <ip-address>/<bitmask> (example: ip 192.168.1.1/24)\n')
         return
     inp = inp.split('/')
-    if len(inp) != 2:
+    if len(inp) > 2:
         print('Incorrect input! Type "ip" or "ip help" to see command help\n')
         return
     else:
         try:
             ip = list(map(int, inp[0].split('.')))
-            if len(ip) != 4:
+            if len(ip) > 4:
                 print('IP address must contain 4 octets!\n')
                 return
+            else:
+                while len(ip) < 4:
+                    ip.append(0)
             ip = [clamp_byte(i) for i in ip]
         except:
             print('Incorrect IP-address!\n')
@@ -71,10 +74,23 @@ def ip_calculator(inp):
         print('HostMax:'.ljust(T1), dot_sep(hostmax).ljust(T2), bin_dot_sep(hostmax), sep='')
 
         # Hosts/Net > 0
-        print('Hosts/Net:'.ljust(T1), '{:,}'.format(hosts).ljust(T2), sep='')
+        print('Hosts/Net:'.ljust(T1), '{:,}'.format(hosts).ljust(T2), sep='', end='')
     else:
         print('HostMin:'.ljust(T1), 'N/A', sep='')   # HostMin = N/A
         print('HostMax:'.ljust(T1), 'N/A', sep='')   # HostMax = N/A
-        print('Hosts/Net:'.ljust(T1), 'N/A'.ljust(T2), sep='') # Hosts/Net = N/A
+        print('Hosts/Net:'.ljust(T1), 'N/A'.ljust(T2), sep='', end='') # Hosts/Net = N/A
+
+    # Finding network class
+    octet = to_bin(network[0])
+    if octet.startswith('0'):
+        print('Class A')
+    elif octet.startswith('10'):
+        print('Class B')
+    elif octet.startswith('110'):
+        print('Class C')
+    elif octet.startswith('1110'):
+        print('Class D')
+    elif octet.startswith('1111'):
+        print('Class E - Experimental Address Space')
     
     print('-' * 71, '\n')
